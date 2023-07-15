@@ -29,6 +29,12 @@ def ssh_into_instance(hostname, username):
     return ssh
 
 
+def execute_remote_commmand(ssh, command):
+    """Execute a remote command on an SSH connection."""
+    stdin, stdout, stderr = ssh.exec_command(command)
+    return stdout.readlines()
+
+
 def main():
     actions = [
         Action(
@@ -53,5 +59,4 @@ and make sure that one server is running at all times."""
 
 
 if __name__ == "__main__":
-    ssh = ssh_into_instance(hostname="164.92.91.161", username="root")
-    import pdb; pdb.set_trace()
+    pass
