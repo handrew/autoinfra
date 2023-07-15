@@ -3,13 +3,13 @@ import os
 from dotenv import load_dotenv
 import paramiko
 from io import StringIO
-
+import boto3
 load_dotenv()
 from agentic_gpt.agent import AgenticGPT
 from agentic_gpt.agent.utils.llm_providers import get_completion
 from agentic_gpt.agent.action import Action
 from playwright.sync_api import sync_playwright
-
+import json
 
 def create_ec2_instance(instance_name, instance_count):
     s = boto3.Session(region_name="us-west-2")
@@ -38,12 +38,17 @@ def create_ec2_instance(instance_name, instance_count):
                 ]
             },
         ],
+        SecurityGroupIds=["sg-00aeb2ab68095fc79"],
     )
     for instance in instances:
         instance.wait_until_running()
+    inst_with_ip = ec2.describe_instances(InstanceIds=[instance.instance_id for instance in instances])['Reservations'][0]['Instances']
+    ips = [inst["PublicDnsName"] for inst in inst_with_ip]
+    return ips[0]
 
-
-def ssh_into_instance(hostname, username):
+def ssh_into_instance(hostname):
+    username = "ec2-user"
+    print("sshing with: {}, username {} ", hostname, username)
     ssh = paramiko.SSHClient()
 
     keyfile = os.path.expanduser(os.environ["SSH_KEYFILE"])
@@ -53,20 +58,15 @@ def ssh_into_instance(hostname, username):
 
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname=hostname, username=username, pkey=mykey)
+    print("connected")
     return ssh
-
-
-def execute_remote_commmand(ssh, command):
-    """Execute a remote command on an SSH connection."""
-    stdin, stdout, stderr = ssh.exec_command(command)
-    return stdout.readlines()
 
 
 def main():
     actions = [
         Action(
             name="create_ec2_instance",
-            description="Create an EC2 instance on Amazon.",
+            description="Create an EC2 instance on Amazon. Returns the public ipv4 of this instance.",
             function=create_ec2_instance,
         ),
         Action(
@@ -76,10 +76,10 @@ def main():
         ),
     ]
 
-    objective = f"""Create 1 EC2 Instance"""
+    objective = f"""Create 1 EC2 Instance with name rat. Ssh into that instance. Declare done."""
 
     agent = AgenticGPT(
-        objective, actions_available=actions, model="gpt-3.5-turbo-16k"
+        objective, actions_available=actions, model="gpt-4",# verbose=True
     )
     agent.run()
 
