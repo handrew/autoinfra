@@ -16,7 +16,7 @@ def create_ec2_instance(instance_name, instance_count):
     ec2_session = s.resource('ec2')
     ec2 = boto3.client('ec2')
     # Define the AMI ID, instance type, and other parameters
-    ami_id = 'ami-0507f77897697c4ba'
+    ami_id = 'ami-01edeee178608e9b2'
     instance_type = 't2.micro'
     key_name = 'ssh'
 
@@ -38,7 +38,7 @@ def create_ec2_instance(instance_name, instance_count):
                 ]
             },
         ],
-        SecurityGroupIds=["sg-00aeb2ab68095fc79"],
+        SecurityGroupIds=["sg-0d68b8c7dac2c6e30"],
     )
     for instance in instances:
         instance.wait_until_running()
@@ -46,7 +46,7 @@ def create_ec2_instance(instance_name, instance_count):
     ips = [inst["PublicDnsName"] for inst in inst_with_ip]
     return ips[0]
 
-def ssh_into_instance(hostname):
+def ssh_and_execute_cmd(hostname, command):
     username = "ec2-user"
     print("sshing with: {}, username {} ", hostname, username)
     ssh = paramiko.SSHClient()
@@ -58,7 +58,8 @@ def ssh_into_instance(hostname):
 
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname=hostname, username=username, pkey=mykey)
-    print("connected")
+    stdin, stdout, stderr = ssh.exec_command(command)
+    lines = stdout.readlines()
     return ssh
 
 
@@ -70,9 +71,9 @@ def main():
             function=create_ec2_instance,
         ),
         Action(
-            name="ssh_into_instance",
-            description="SSH into instance",
-            function=ssh_into_instance,
+            name="ssh_and_execute_cmd",
+            description="SSH into an instance and run a command.",
+            function=ssh_and_execute_cmd,
         ),
     ]
 
