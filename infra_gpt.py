@@ -11,9 +11,36 @@ from agentic_gpt.agent.action import Action
 from playwright.sync_api import sync_playwright
 
 
-def create_ec2_instance(instance_name, instance_size):
-    """Create an EC2 instance with `instance_name` and `instance_size`."""
-    raise NotImplementedError("TODO")
+def create_ec2_instance(instance_name, instance_count):
+    s = boto3.Session(region_name="us-west-2")
+    ec2_session = s.resource('ec2')
+    ec2 = boto3.client('ec2')
+    # Define the AMI ID, instance type, and other parameters
+    ami_id = 'ami-0507f77897697c4ba'
+    instance_type = 't2.micro'
+    key_name = 'ssh'
+
+    # Create the instance
+    instances = ec2_session.create_instances(
+        ImageId=ami_id,
+        InstanceType=instance_type,
+        KeyName=key_name,
+        MinCount=instance_count,
+        MaxCount=instance_count,
+        TagSpecifications=[
+            {
+                'ResourceType': 'instance',
+                'Tags': [
+                    {
+                        'Key': 'Name',
+                        'Value': instance_name,
+                    },
+                ]
+            },
+        ],
+    )
+    for instance in instances:
+        instance.wait_until_running()
 
 
 def ssh_into_instance(hostname, username):
@@ -43,8 +70,7 @@ def main():
         ),
     ]
 
-    objective = f"""Create and deploy a version of yourself onto five servers
-and make sure that one server is running at all times."""
+    objective = f"""Create 1 EC2 Instance"""
 
     agent = AgenticGPT(
         objective, actions_available=actions, model="gpt-3.5-turbo-16k"
@@ -53,4 +79,4 @@ and make sure that one server is running at all times."""
 
 
 if __name__ == "__main__":
-    ssh_into_instance()
+    main()
