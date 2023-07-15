@@ -56,6 +56,12 @@ def ssh_into_instance(hostname, username):
     return ssh
 
 
+def execute_remote_commmand(ssh, command):
+    """Execute a remote command on an SSH connection."""
+    stdin, stdout, stderr = ssh.exec_command(command)
+    return stdout.readlines()
+
+
 def main():
     actions = [
         Action(
