@@ -48,7 +48,7 @@ def ssh_into_instance(hostname, username):
 
     keyfile = os.path.expanduser(os.environ["SSH_KEYFILE"])
     with open(keyfile, "r") as f:
-        keyfile = StringIO.StringIO(f.read())
+        keyfile = StringIO(f.read())
     mykey = paramiko.RSAKey.from_private_key(keyfile)
 
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -80,3 +80,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #ssh = ssh_into_instance(hostname="164.92.91.161", username="root")
+    #import pdb; pdb.set_trace()
