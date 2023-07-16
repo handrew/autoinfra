@@ -1,4 +1,4 @@
-# Infra GPT
+# 🔩 AutoInfraGPT
 
 *by Adi Prerepa and Andrew Han*
 
