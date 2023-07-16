@@ -36,6 +36,7 @@ The agent is instantiated with `actions` and given the objective to "Create 1 EC
 
 The hardcoded endpoint hosts a Python server which returns a simple HTML. GPT-4 and `AgenticGPT` should, given the instructions, know to call the two functions in order, resulting in a `curl` reuquest to the given endpoint. See the output below to see the output from the agent.
 
+![EC2](ec2dash.png)
 ## Future Possibilities
 
 This was a trivial example that involved two steps, with calls to two functions. However, you could imagine exposing many more of AWS's APIs to `AgenticGPT`, giving it the ability to use more resources, read logs, and respond accordingly. Taken as a whole, we could conceivably see a world in which devops are automated by agents. 
