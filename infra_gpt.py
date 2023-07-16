@@ -16,7 +16,7 @@ def create_ec2_instance(instance_name, instance_count):
     ec2_session = s.resource('ec2')
     ec2 = boto3.client('ec2')
     # Define the AMI ID, instance type, and other parameters
-    ami_id = 'ami-01edeee178608e9b2'
+    ami_id = 'ami-0507f77897697c4ba'
     instance_type = 't2.micro'
     key_name = 'ssh'
 
@@ -60,7 +60,7 @@ def ssh_and_execute_cmd(hostname, command):
     ssh.connect(hostname=hostname, username=username, pkey=mykey)
     stdin, stdout, stderr = ssh.exec_command(command)
     lines = stdout.readlines()
-    return ssh
+    return "\n".join(lines)
 
 
 def main():
@@ -77,7 +77,7 @@ def main():
         ),
     ]
 
-    objective = f"""Create 1 EC2 Instance with name rat. Ssh into that instance. Declare done."""
+    objective = f"""Create 1 EC2 Instance with name rat. Ssh into that instance and make HTTP request via curl to http://54.245.39.114:8080. Print the response from the server. Declare done."""
 
     agent = AgenticGPT(
         objective, actions_available=actions, model="gpt-4",# verbose=True
