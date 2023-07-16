@@ -74,7 +74,7 @@ INFO:agentic_gpt.agent.agentic_gpt:Chosen action: ssh_and_execute_cmd
 sshing with: {}, username {}  ec2-54-213-51-236.us-west-2.compute.amazonaws.com ec2-user                                                                                                                           
 INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_8.7)                                                                                                                                                
 INFO:paramiko.transport:Authentication (publickey) successful!                                                                                                                                                     
-INFO:agentic_gpt.agent.agentic_gpt:Completed action ssh_and_xecute_cmd. Result: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">                                        
+INFO:agentic_gpt.agent.agentic_gpt:Completed action ssh_and_execute_cmd. Result: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">                                        
                                                                                                                                                                                                                    
 <html>                                                                                                                                                                                                             
                                                                                                                                                                                                                    
